@@ -8,23 +8,26 @@ include 'nav.php';
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     if (isset($_POST['productSubmit'])) {
+	// if the post is set, insert the new product into the db
+	// set variable for query
         $qry = "INSERT INTO products(supplier_id, product_name, product_price, product_qty) VALUES(?,?,?,?)";
 
-        // prepare
+        // prepare statement
         if (!($stmt = $conn->prepare($qry))) {
             echo "Prepare failed: " . $stmt->error;
         }
-
+	// bind the parameters to statement
         if (!$stmt->bind_param("issi", $supp, $name, $price, $qty)) {
             echo "Binding parameters failed: " . $stmt->error;
         }
-
+	
         // parameter variables
         $supp = $_SESSION['supplier_id'];
         $name = $_POST['productName'];
         $price = $_POST['productPrice'];
         $qty = $_POST['productQty'];
-
+	
+	// execute the statement
         if (!$stmt->execute()) {
             echo "Execute failed: (" . $stmt->errno . ") " . $stmt->error;
         } else {
